@@ -1,0 +1,8 @@
+inst/doc
+.DS_Store
+.Rbuildignore
+.Rproj.user/
+.git/
+.RData
+.Rhistory
+.dropbox

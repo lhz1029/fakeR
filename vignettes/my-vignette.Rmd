@@ -1,0 +1,71 @@
+---
+title: "fakeR"
+author: "Lily Zhang and Dustin Tingley"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Motivation 
+As a response to concerns of anonymity and user privacy when releasing datasets for public use, fakeR is a package created to help allow users to simulate from an existing dataset. The package allows for simulating datasets of various variable types. This includes datasets containing categorical and quantitative variables as well as datasets of clustered time series observations. The package functions are also useful for maintaining a similar structure of missingness if one is to exist in the existing dataset. 
+
+One potential workflow for anonymization using this package would be to simulate fake data from the existing dataset to release to the public. From there, give others the opportunity to run analyses on the fake data and privately share their scripts to be rerun by the data owner on the real dataset. This procedure protects the anonymity of the individuals while allowing the analyses to be run on the real data for accurate end results. The amount of information from the original dataset to be shared in the simulated version can be specified, from approximate distribution .including covariances, between variables to the variable type only, with the data encoded with random numbers. Further research is currently being done to test and analyze such a method.
+
+## Examples
+### Simulate from time-independent data frame of multiple types
+```{r, results='hide'}
+library(datasets)
+library(fakeR)
+library(stats)
+```
+```{r, fig.width=6, fig.height=4}
+# single column of an unordered, string factor
+state_df <- data.frame(division=state.division)
+# character variable
+state_df$division <- as.character(state_df$division)
+# numeric variable
+state_df$area <- state.area
+# factor variable
+state_df$region <- state.region
+state_sim <- simulate_dataset(state_df)
+```
+Notice how the function prints the variable types is notices while it is generating the simulated data.
+```{r}
+head(state_df)
+head(state_sim)
+```
+It is important to note that the multivariate normal assumption for generating numeric and ordered factor data is not always appropriate given the original data. 
+
+## Simulate from time-independent data frame with missingness & independence between variables
+```{r}
+df <- mtcars
+# change one of the variable types to an unordered factor
+df$carb <- as.factor(df$carb)
+# change another variable type to an ordered factor
+df$gear <- as.ordered(as.factor(df$gear))
+df[2,] <- NA
+sim_df <- simulate_dataset(df, stealth.level=2, ignore='mpg', use.miss=TRUE)
+```
+
+### Simulate from time-dependent dataframe
+```{r}
+## time series dataframe
+tree_ring <- data.frame(treering)
+tree_ring$year <- c(1: nrow(tree_ring))
+sim_tree_ring <- simulate_dataset_ts(tree_ring, 
+                                     cluster="treering", 
+                                     time.variable="year")
+```
+```{r, fig.width=6, fig.height=4}
+plot (tree_ring$year, tree_ring$treering, type='l', 
+      main=paste("Original","Normalized ring width"),
+      ylab="Ring width", xlab="Year index")
+plot (tree_ring$year, tree_ring$treering, type='l', 
+      main=paste("Simulated","Normalized ring width"),
+      ylab="Ring width", xlab="Year index")  
+```
+
+Of note is the fact that the current options are to simulate data from a stationary or zero-inflated count time series.  

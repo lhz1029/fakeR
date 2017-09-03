@@ -1,0 +1,7 @@
+exportPattern("^[[:alpha:]]+")
+import(mvtnorm)
+import(polycor)
+import(pscl)
+import(VGAM)
+importFrom("stats", "arima", "arima.sim", "cov", "lag", "quantile",
+             "rnorm", "runif", "sd")
