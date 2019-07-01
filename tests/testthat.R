@@ -18,3 +18,8 @@ test_that("All variable types consistent", {
 })
 
 
+test_that("Factor variables are treated like other variables (desired data frame size n is returned).", {
+      expect_equal(nrow(fakeR::simulate_dataset(iris, n = 10)), 10)
+})
+
+
