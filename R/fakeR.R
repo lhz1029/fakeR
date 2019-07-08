@@ -294,7 +294,7 @@ simulate_dataset <- function(dataset, digits=2, n=NA,
     if(unorder>0){
       print("Some unordered factors...")
       # create new dataframe for the categorical subset of dataset
-      fake_categorical <- .simulate_categorical(dataset, location, row)}
+      fake_categorical <- .simulate_categorical(dataset, location, n)}
     # remove categorical variables from dataset
     dataset[which(location)] <- list(NULL)
     # if there are no more columns to simulate
