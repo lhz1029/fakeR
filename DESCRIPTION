@@ -20,3 +20,5 @@ Suggests: knitr,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
+Author: Lily Zhang
+Maintainer: Lily Zhang <lilyhzhang1029@gmail.com>

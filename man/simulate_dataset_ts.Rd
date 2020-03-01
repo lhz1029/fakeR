@@ -6,11 +6,11 @@
 Simulate a dataframe of time series data
 }
 \description{
-This function simulates clustered numeric time series data from an ARIMA model fit or, if specified, a zero-inflated Poission regression model fit, with each column variable regressed on the first lag.
+This function simulates clustered numeric time series data from an ARIMA model fit.
 }
 \usage{
 simulate_dataset_ts(dataset, digits=2, n=NA, cluster=NA, time.variable=NA,
-                    date.index=FALSE, complete.panel=FALSE, zero.inflate=FALSE,
+                    date.index=FALSE, complete.panel=FALSE,
                     stealth.level=2, level3.noise=FALSE, use.miss=TRUE, ignore=NA)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -43,11 +43,6 @@ whether the time variable is a date and should be treated as a Date object.
 when set to TRUE, indicates a preprocessing step needed to complete 
 the time series columns. Specifically, inserts all missing dates and 
 zero values at each of those time points.
-}
-  \item{zero.inflate}{
-%%     ~~Describe \code{zero.inflate} here~~
-when set to TRUE, indicates that time series variables require a 
-zero-inflated Poisson regression model fit. When set to FALSE (default), series all fit to an ARIMA model to simulate from.
 }
   \item{stealth.level}{
   when set to 2 (default), simulates independent time series observations. When set to 3, does not take into account any covariances between time points and instead randomly samples from a uniform distribution ranging from the min to the max of the data for each variable. No option 1. 

@@ -65,26 +65,9 @@
   return(ts_final)
 }
 
-# helper function to fit the ZIP regression model on lag of 1 
-.sim_zeroinfl_pois <- function(fake_ts, cluster, num_ts){
-  for(i in 1:num_ts){
-    # check that time series is made of count values 
-    if(!is.integer(fake_ts[,cluster[i]])){
-      print("Turned numeric values to counts to fit to ZIP...")
-      fake_ts[,cluster[i]] <- as.integer(fake_ts[,cluster[i]])}
-    # fit a zero-inflated Poisson model on the time series
-    lag1 <- as.integer(stats::lag(fake_ts[,cluster[i]], 1))
-    fit <- pscl::zeroinfl(fake_ts[,cluster[i]] ~ lag1)
-    
-    # simulate from the model fit
-    lambda <- stats::predict(fit, type='count')
-    p <- stats::predict(fit, type='zero')
-    fake_ts[,cluster[i]] <- VGAM::rzipois(n=length(fake_ts[,cluster[i]]), lambda=lambda, pstr0=p)}
-  return(fake_ts)
-}
 ##############################################################
 simulate_dataset_ts <- function(dataset, digits=2, n=NA, cluster=NA, time.variable=NA,
-                                date.index=FALSE, complete.panel=FALSE, zero.inflate=FALSE,
+                                date.index=FALSE, complete.panel=FALSE,
                                 stealth.level=2, level3.noise=FALSE, use.miss=TRUE, ignore=NA){
   
   ## checks
@@ -144,16 +127,12 @@ simulate_dataset_ts <- function(dataset, digits=2, n=NA, cluster=NA, time.variab
   
   # for a stealth.level of 2, simulate each time series separately and assume independence
   if(stealth.level==2){
-    # if zero.inflate, fit a zero-inflated poisson regression model to each time series
-    if(zero.inflate==TRUE){
-      fake_ts <- .sim_zeroinfl_pois(fake_ts, cluster, num_ts)}        
-    # else, use ARIMA to fit each time series and simulate from the ARIMA fit
-    else{
-      for(i in 1:num_ts){
-        ts_fit <- stats::arima(fake_ts[,cluster[i]])
-        fake_ts[,cluster[i]] <- stats::arima.sim(model=as.list(stats::coef(ts_fit)), 
-                                                 length(fake_ts[,cluster[i]]))}}}
-  
+    # use ARIMA to fit each time series and simulate from the ARIMA fit
+    for(i in 1:num_ts){
+      ts_fit <- stats::arima(fake_ts[,cluster[i]])
+      fake_ts[,cluster[i]] <- stats::arima.sim(model=as.list(stats::coef(ts_fit)), 
+                                                length(fake_ts[,cluster[i]]))}}
+
   # at a stealth level of three, simulate time series by sampling from a uniform 
   # distribution of the variable min to variable max, plus Gaussian noise with a standard
   # deviation of 1/4 of the range of the data if specified

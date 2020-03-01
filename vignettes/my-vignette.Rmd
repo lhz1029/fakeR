@@ -67,5 +67,3 @@ plot (tree_ring$year, tree_ring$treering, type='l',
       main=paste("Simulated","Normalized ring width"),
       ylab="Ring width", xlab="Year index")  
 ```
-
-Of note is the fact that the current options are to simulate data from a stationary or zero-inflated count time series.  

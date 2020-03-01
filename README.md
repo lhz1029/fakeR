@@ -13,7 +13,6 @@ CC0
 ## Imports
 mvtnorm,
 polycor,
-pscl,
 VGAM,
 stats
 ## Suggests
